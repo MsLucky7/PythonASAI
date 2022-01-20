@@ -1,13 +1,14 @@
 import kivy
 
 from kivy.app import App
+from kivy.uix.widget import Widget
 
 import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-class BaseRun():
+class BaseRun(Widget):
 
     def func():
         df = pd.read_csv("movie_dataset.csv")
@@ -37,7 +38,7 @@ class BaseRun():
         sorted_similar_movies = sorted(similar_movies,key=lambda x:x[1],reverse=True)[1:]
 
         i=0
-        print("Top 5 similar movies to "+movie_user_likes+" are:\n")
+        return("Top 5 similar movies to "+movie_user_likes+" are:\n")
         for element in sorted_similar_movies:
             print(get_title_from_index(element[0]))
             i=i+1
@@ -49,6 +50,4 @@ class MyApp(App):
     def build(self):
         return BaseRun()
 
-
-if __name__ == '__main__':
-    MyApp().run()
+MyApp().run()
