@@ -5,6 +5,7 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 
 class MyStuff(GridLayout):
+    meinGenre = "action"
     def __init__(self, **kwargs):
         super(MyStuff, self).__init__(**kwargs)
         self.cols = 1
@@ -31,10 +32,10 @@ class MyStuff(GridLayout):
         self.add_widget(self.submit)
 
     def pressed(self, instance):
-        name = self.firstName.text
-        last = self.lastName.text
+        genre = self.firstName.text
+        titel = self.lastName.text
 
-        print(name, last)
+        return genre, titel
 
 class MyApp(App):
     def build(self):
