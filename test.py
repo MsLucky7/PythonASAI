@@ -21,10 +21,6 @@ class MyStuff(GridLayout):
         self.lastName = TextInput(multiline=False)
         self.inside.add_widget(self.lastName)
 
-        self.inside.add_widget(Label(text="pp: "))
-        self.pp = TextInput(multiline=False)
-        self.inside.add_widget(self.pp)
-
         self.add_widget(self.inside)
 
         self.submit = Button(text="Submit", font_size=40)
