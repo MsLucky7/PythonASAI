@@ -1,0 +1,49 @@
+<My_Class>:
+    DropDown:
+        padding: 0, 0, 0, root.width * 0.4
+        id: dropdown
+        on_select: btn.text = '{}'.format(args[1])
+
+    GridLayout:
+        size_hint_y: None
+        height: 44
+        cols: 2
+        row_default_height: '10dp'
+        Label:
+            id: person
+            text: 'Person'
+            text_size: self.size
+            valign: 'middle'
+        CheckBox:
+            text: 'check me'
+            on_active:
+                root.on_checkbox_active(person.text, self.active)
+    GridLayout:
+        size_hint_y: None
+        height: 44
+        cols: 2
+        row_default_height: '10dp'
+        Label:
+            id: vehicle
+            text: 'Vehicle'
+            text_size: self.size
+            valign: 'middle'
+        CheckBox:
+            id: vecle
+            text: 'check me'
+            on_active:
+                root.on_checkbox_active(vehicle.text, self.active)
+    GridLayout:
+        size_hint_y: None
+        height: 44
+        cols: 2
+        row_default_height: '10dp'
+        Label:
+            id: aircraft
+            text: 'Air_craft'
+            text_size: self.size
+            valign: 'middle'
+        CheckBox:
+            text: 'check me'
+            on_active:
+                root.on_checkbox_active(aircraft.text, self.active)
