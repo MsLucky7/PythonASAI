@@ -26,7 +26,7 @@ def get_index_from_title(title):
         index_list.append(df[df.title == title[i]]["index"].values[0])
     return index_list
 
-movies_user_likes = ["The Dark Knight Rises", "Spider-Man 2", "X-Men: The Last Stand", "Diary of a Wimpy Kid: Dog Days", "Avatar", "Skyfall"]
+movies_user_likes = ["The Dark Knight Rises",  "Skyfall", "Diary of a Wimpy Kid: Dog Days", "Avatar", "Spider-Man 2", "X-Men: The Last Stand"]
 movie_index = get_index_from_title(movies_user_likes)
 
 length_list = len(movies_user_likes)
@@ -39,12 +39,12 @@ for i in range (length_list):
 list_of_similar_movies_user_likes = list(itertools.chain.from_iterable(similar_movies_user_likes_list))
 sorted_similar_movies_user_likes = sorted(list_of_similar_movies_user_likes,key=lambda x:x[1],reverse=True)[1:]
 
-# remove first few movies, which are "movies user likes" itself
+# remove first few movies, which are "movies user likes" itself; they are most similar to themselves
 for i in range (length_list):
     sorted_similar_movies_user_likes.pop(0)
 
 i=0
-print("Top 5 similar movies_user_likes to " + " are:\n")
+print("Top 5 similar movies to "+ ' '.join(map(str, movies_user_likes))  +" are:\n")
 for element in sorted_similar_movies_user_likes:
     print(get_title_from_index(element[0]))
     i=i+1
