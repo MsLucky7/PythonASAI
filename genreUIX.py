@@ -9,8 +9,8 @@ from kivy.app import App
 
 from mainNeu import *
 
-genres = set()
-movies = set()
+genres = []
+movies = []
 genre1 = ''
 
 # Make an App by deriving from the App class
@@ -96,9 +96,9 @@ class ChooseGenre(App):
     def returnList(spinnerID, spinnerButtonID):
         list_votes = []
         topTenMovies = []
-        genres.add(genre1)
-        genres.add(genre2)
-        genres.add(genre3)
+        genres.append(genre1)
+        genres.append(genre2)
+        genres.append(genre3)
 
         for i in range (len(df)):
 
@@ -106,7 +106,7 @@ class ChooseGenre(App):
 
                 if df["genres"].str.contains(genres[j])[i]:
 
-                    movies.add(df["title"][i])
+                    movies.append(df["title"][i])
 
         indices_titles = get_index_from_title(movies)
 
@@ -118,9 +118,8 @@ class ChooseGenre(App):
 
         for i in range (10):
             topTenMovies.append(sorted_list_votes[i][1])
+        print(topTenMovies)
             # print(df["genres"].str.contains("Action"))
-
-
 
 # Run the app
 if __name__ == '__main__':
