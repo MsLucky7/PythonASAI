@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 from ast import literal_eval
-import itertools
 from rake_nltk import Rake
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -86,8 +85,13 @@ cv = CountVectorizer()
 count_matrix = cv.fit_transform(data['soup'])
 cosine_sim = cosine_similarity(count_matrix)
 
+sim_scores = list(enumerate(cosine_sim[-1, :]))
+sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+
+
 def get_title_from_index(index):
     return data[data.index == index]['title'].values[0]
+
 
 def get_index_from_title(title):
     index_list = []
@@ -95,7 +99,9 @@ def get_index_from_title(title):
         index_list.append(data[data.title == title[i]]['index'].values[0])
     return index_list
 
-movies_user_likes = ["The Dark Knight Rises", "Skyfall", "Diary of a Wimpy Kid: Dog Days", "Avatar", "Spider-Man 2","X-Men: The Last Stand"]
+
+movies_user_likes = ["The Dark Knight Rises", "Skyfall", "Diary of a Wimpy Kid: Dog Days", "Avatar", "Spider-Man 2",
+                     "X-Men: The Last Stand"]
 movie_index = get_index_from_title(movies_user_likes)
 
 length_list = len(movies_user_likes)
@@ -119,6 +125,7 @@ def make_recommendation():
         i = i + 1
         if i >= 5:
             break
+    return sim_scores
 
 
 make_recommendation()
