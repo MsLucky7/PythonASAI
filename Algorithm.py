@@ -1,38 +1,24 @@
 import pandas as pd
 import numpy as np
 from ast import literal_eval
+import itertools
+from rake_nltk import Rake
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-metadata = pd.read_csv("Data_CSVs/movies_metadata.csv")
-ratings = pd.read_csv("Data_CSVs/ratings.csv")
-credits = pd.read_csv("Data_CSVs/credits.csv")
-keywords = pd.read_csv("Data_CSVs/keywords.csv")
+df1 = pd.read_csv("tmdb_5000_movies.csv")
+df2 = pd.read_csv("tmdb_5000_credits.csv")
+data = pd.merge(df1, df2)
+data.drop(['budget', 'homepage', 'original_language', 'id', 'movie_id', 'release_date', 'popularity', 'tagline',
+           'production_countries', 'production_companies', 'runtime', 'original_title', 'status', 'vote_average',
+           'vote_count', 'revenue', 'spoken_languages'], axis=1, inplace=True)
+data.dropna(axis=0, how='any', thresh=None, subset=None, inplace=False)
+data.drop(data[data.keywords == '[]'].index, inplace=True)
+data.drop(data[data.genres == '[]'].index, inplace=True)
 
-metadata = metadata.iloc[0:12000, :]
-
-keywords['id'] = keywords['id'].astype('int')
-credits['id'] = credits['id'].astype('int')
-metadata['id'] = metadata['id'].astype('int')
-
-# merge keywords and credits into main dataframe
-metadata = metadata.merge(credits, on='id')
-metadata = metadata.merge(keywords, on='id')
-metadata.drop(
-    ['adult', 'belongs_to_collection', 'budget', 'homepage', 'original_language', 'original_title', 'tagline', 'video',
-     'vote_count'], axis=1, inplace=True)
-metadata.drop(['vote_average', 'imdb_id'], axis=1, inplace=True)
-metadata.drop(
-    ['popularity', 'poster_path', 'production_companies', 'production_countries', 'release_date', 'runtime', 'revenue',
-     'spoken_languages', 'status'], axis=1, inplace=True)
-metadata.dropna(axis=0, how='any', thresh=None, subset=None, inplace=False)
-metadata.drop(metadata[metadata.keywords == '[]'].index, inplace=True)
-metadata.drop(metadata[metadata.genres == '[]'].index, inplace=True)
-
-#Avoid datatype errors
-features = ['cast', 'crew', 'keywords', 'genres']
+features = ['cast', 'keywords', 'genres', 'crew']
 for feature in features:
-    metadata[feature] = metadata[feature].apply(literal_eval)
+    data[feature] = data[feature].apply(literal_eval)
 
 
 def get_director(x):
@@ -42,111 +28,97 @@ def get_director(x):
     return np.nan
 
 
-# Getting a list of the actors, keywords and genres
 def get_list(x):
-    if isinstance(x, list):  # if input is a list or not
-        names = [i['name'] for i in x]  # to get names of actors
-
-        # Check if more than 3 elements exist. If yes, return only first three.
+    if isinstance(x, list):
+        names = [i['name'] for i in x]
         if len(names) > 7:
             names = names[:7]
         return names
-
-    # Return empty list in case of missing/malformed data
     return []
 
 
-metadata['director'] = metadata['crew'].apply(get_director)
+data['director'] = data['crew'].apply(get_director)
 
 features = ['cast', 'keywords', 'genres']
 for feature in features:
-    metadata[feature] = metadata[feature].apply(get_list)
+    data[feature] = data[feature].apply(get_list)
 
-metadata[['title', 'cast', 'director', 'keywords', 'genres']].head()
+data.drop('crew', axis=1, inplace=True)
+
+data['Key_words'] = ""
+data['overview'] = data['overview'].apply(str)
+
+for index, row in data.iterrows():
+    plot = row['overview']
+    r = Rake()
+    r.extract_keywords_from_text(plot)
+    key_words_dict_scores = r.get_word_degrees()
+    row['Key_words'] = list(key_words_dict_scores.keys())
 
 
 def clean_data(x):
     if isinstance(x, list):
-        return [str.lower(i.replace(" ", "")) for i in x]  # cleaning up spaces in the data
+        return [str.lower(i.replace(" ", "")) for i in x]
     else:
-        # Check if director exists. If not, return empty string
         if isinstance(x, str):
             return str.lower(x.replace(" ", ""))
         else:
             return ''
 
 
-features = ['cast', 'keywords', 'director', 'genres']
+features = ['cast', 'keywords', 'director', 'genres', 'Key_words']
 
 for feature in features:
-    metadata[feature] = metadata[feature].apply(clean_data)
-
-metadata.head()
+    data[feature] = data[feature].apply(clean_data)
 
 
 def create_soup(x):
-    return ' '.join(x['keywords']) + ' ' + ' '.join(x['cast']) + ' ' + x['director'] + ' ' + ' '.join(x['genres'])
+    return ' '.join(x['Key_words']) + ' ' + ' '.join(x['cast']) + ' ' + x['director'] + ' ' + ' '.join(
+        x['genres']) + ' ' + ' '.join(x['keywords'])
 
 
-metadata['soup'] = metadata.apply(create_soup, axis=1)
-metadata[['title', 'soup', 'cast', 'director', 'keywords', 'genres']].head()
+data['soup'] = data.apply(create_soup, axis=1)
+data['index'] = data.index
 
-display(metadata)
+display(data)
+
+cv = CountVectorizer()
+count_matrix = cv.fit_transform(data['soup'])
+cosine_sim = cosine_similarity(count_matrix)
+
+def get_title_from_index(index):
+    return data[data.index == index]['title'].values[0]
+
+def get_index_from_title(title):
+    index_list = []
+    for i in range(len(title)):
+        index_list.append(data[data.title == title[i]]['index'].values[0])
+    return index_list
+
+movies_user_likes = ["The Dark Knight Rises", "Skyfall", "Diary of a Wimpy Kid: Dog Days", "Avatar", "Spider-Man 2","X-Men: The Last Stand"]
+movie_index = get_index_from_title(movies_user_likes)
+
+length_list = len(movies_user_likes)
+similar_movies_user_likes_list = []
+
+for i in range(length_list):
+    similar_movies_user_likes_list.append(list(enumerate(cosine_sim[movie_index[i]])))
+
+list_of_similar_movies_user_likes = list(itertools.chain.from_iterable(similar_movies_user_likes_list))
+sorted_similar_movies_user_likes = sorted(list_of_similar_movies_user_likes, key=lambda x: x[1], reverse=True)[1:]
+
+for i in range(length_list):
+    sorted_similar_movies_user_likes.pop(0)
 
 
-# User input for genre, movies
-def get_genres():
-    genres = input("What Movie Genre are you interested in (if multiple, please separate them with a comma)?")
-    genres = " ".join(["".join(n.split()) for n in genres.lower().split(',')])
-    return genres
-
-
-def get_movies():
-    movies = input("What are some movies within the genre that you love?")
-    movies = " ".join(["".join(n.split()) for n in movies.lower().split(',')])
-    return movies
-
-
-def get_searchTerms():
-    searchTerms = []
-    genres = get_genres()
-    searchTerms.append(genres)
-
-    movies = get_movies()
-    searchTerms.append(movies)
-
-    return searchTerms
-
-
-def make_recommendation(metadata=metadata):
-    new_row = metadata.iloc[-1, :].copy()
-
-    # grabbing the new wordsoup from the user
-    searchTerms = get_searchTerms()
-    new_row.iloc[-1] = " ".join(searchTerms)  # adding the input to our new row
-
-    # adding the new row to the dataset
-    metadata = metadata.append(new_row)
-
-    # vectorizing matrix
-    count = CountVectorizer(stop_words='english')
-    count_matrix = count.fit_transform(metadata['soup'])
-
-    # get similarity matrix
-    cosine_sim2 = cosine_similarity(count_matrix, count_matrix)
-
-    # sorting cosine similarities highest to lowest
-    sim_scores = list(enumerate(cosine_sim2[-1, :]))
-    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-
-    # matching the similarities to the movie titles
-    ranked_titles = []
-    for i in range(1, 11):
-        indx = sim_scores[i][0]
-        ranked_titles.append([metadata['title'].iloc[indx], metadata['genres'].iloc[indx]])
-
-    # return similarity scores for quality check
-    return ranked_titles, sim_scores
+def make_recommendation():
+    i = 0
+    print("Top 5 similar movies to " + ' '.join(map(str, movies_user_likes)) + " are:\n")
+    for element in sorted_similar_movies_user_likes:
+        print(get_title_from_index(element[0]))
+        i = i + 1
+        if i >= 5:
+            break
 
 
 make_recommendation()
