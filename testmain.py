@@ -28,27 +28,29 @@ def get_index_from_title(title):
         index_list.append(df[df.title == title[i]]["index"].values[0])
     return index_list
 
-genres = ['Horror']
-chosen_genres = []
+# genres = ['Horror']
+# chosen_genres = []
 
-for i in range (len(df)):
-    for j in range (len(genres)):
-        if df["genres"].str.contains(genres[j])[i]:
-            chosen_genres.append(df["title"][i])
+# for i in range (len(df)):
+#     for j in range (len(genres)):
+#         if df["genres"].str.contains(genres[j])[i]:
+#             chosen_genres.append(df["title"][i])
 
-indices_titles = get_index_from_title(chosen_genres)
-list_votes = []
+# indices_titles = get_index_from_title(chosen_genres)
+# list_votes = []
 
-for i in indices_titles:
-    list_votes.append([df["vote_average"][i], i])
-# print("Index: ", indices_titles)
-# print("Votes: ", list_votes)
-sorted_list_votes = sorted(list_votes, reverse=True)
+# for i in indices_titles:
+#     list_votes.append([df["vote_average"][i], i])
+# # print("Index: ", indices_titles)
+# # print("Votes: ", list_votes)
+# sorted_list_votes = sorted(list_votes, reverse=True)
 
-for i in range (10):
-    print(sorted_list_votes[i])
-    print(df["vote_average"][2170])
-    print(df["combined_features"][2170])
-    print(df["title"][2170])
+# for i in range (10):
+#     print(sorted_list_votes[i])
+#     print(df["vote_average"][2170])
+#     print(df["combined_features"][2170])
+#     print(df["title"][2170])
     # print(df["genres"].str.contains("Action"))
+
+print(df["title"][2796])
 

@@ -130,12 +130,10 @@ class GenreScreen(Screen):
         print(topTenMoviesIndices)
             # print(df["genres"].str.contains("Action"))
 
-        # titles = get_title_from_index(movies)
+        for elements in topTenMoviesIndices:
+            topTenMoviesTitle.append(get_title_from_index(elements))
 
-        # for topMovie in titles:
-        #     topTenMoviesTitle.append([df["title"][topMovie], topMovie])
-
-        # print(topTenMoviesTitle)
+        print(topTenMoviesTitle)
 
 
         self.manager.transition = SlideTransition(direction="right")
