@@ -1,5 +1,5 @@
 # Sample spinner app in kivy 
-from kivy.uix.button import Button
+from    kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.spinner import Spinner
 
@@ -11,7 +11,6 @@ from mainNeu import *
 
 genres = []
 movies = []
-genre1 = ''
 
 # Make an App by deriving from the App class
 class ChooseGenre(App):
