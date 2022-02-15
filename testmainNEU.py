@@ -11,9 +11,9 @@ from IPython.display import display
 # nltk.download('stopwords')
 # nltk.download('punkt')
 
-df1 = pd.read_csv("tmdb_5000_movies.csv")
-df2 = pd.read_csv("tmdb_5000_credits.csv")
-data = pd.merge(df1, df2)
+data1 = pd.read_csv("tmdb_5000_movies.csv")
+data2 = pd.read_csv("tmdb_5000_credits.csv")
+data = pd.merge(data1, data2)
 data.drop(['budget', 'homepage', 'original_language', 'id', 'movie_id', 'release_date', 'popularity', 'tagline',
            'production_countries', 'production_companies', 'runtime', 'original_title', 'status', 'vote_count',
            'revenue', 'spoken_languages'], axis=1, inplace=True)
@@ -84,6 +84,7 @@ def create_soup(x):
 
 data['soup'] = data.apply(create_soup, axis=1)
 data['index'] = data.index
+data.reindex(pd.RangeIndex(data.index.max() + 1)).ffill()
 
 display(data)
 
@@ -94,4 +95,11 @@ cosine_sim = cosine_similarity(count_matrix)
 sim_scores = list(enumerate(cosine_sim[-1, :]))
 sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
 
-print(data['genres'][0])
+genres = ["action", "adventure"]
+genre = "action"
+j = 0
+i = 0
+
+# print(data["genres"].str.contains(genres[j])[i])
+print(data)
+# print(genres[0])

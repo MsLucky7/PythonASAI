@@ -1,5 +1,7 @@
 # A line used mostly as the first one, imports App class
 # that is used to get a window and launch the application
+from ast import IsNot
+from operator import is_not
 from kivy.app import App
 
 # Casual Kivy widgets that reside in kivy.uix
@@ -18,7 +20,7 @@ from Algorithm import *
 # a simple page with navigationation
 
 genres = []
-movies = []
+movies = set()
 topTenMoviesIndices = []
 
 class GenreScreen(Screen):
@@ -109,15 +111,16 @@ class GenreScreen(Screen):
         genres.append(genre2)
         genres.append(genre3)
 
-        for i in range (len(data['genres'])):
+        for i in range (len(data)):
 
             for j in range (len(genres)):
 
-                if data['genres'].str.contains(genres[j])[i]:
+                if data["genres"].str.contains(genres[j])[i]:
 
-                    movies.append(data["title"][i])
+                    movies.add(data["title"][i])
 
-        indices_titles = get_index_from_title(movies)
+        movies_list = list(movies)
+        indices_titles = get_index_from_title(movies_list)
 
         for i in indices_titles:
             list_votes.append([data["vote_average"][i], i])
@@ -127,11 +130,11 @@ class GenreScreen(Screen):
 
         for i in range (10):
             topTenMoviesIndices.append(sorted_list_votes[i][1])
-        print(topTenMoviesIndices)
+        # print(topTenMoviesIndices)
             # print(data["genres"].str.contains("action"))
 
         for elements in topTenMoviesIndices:
-            topTenMoviesTitle.append(get_title_from_index(elements))
+            topTenMoviesTitle.append([get_title_from_index(elements), elements])
 
         print(topTenMoviesTitle)
 
