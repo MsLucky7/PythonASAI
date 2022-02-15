@@ -12,7 +12,7 @@ from kivy.uix.spinner import Spinner
 
 from kivy.uix.floatlayout import FloatLayout
 
-from mainNeu import *
+from Algorithm import *
 
 # Inherit Screen class and make it look like
 # a simple page with navigationation
@@ -23,22 +23,22 @@ topTenMoviesIndices = []
 
 class GenreScreen(Screen):
     
-    def __init__(self, **kwargs):
-        super(GenreScreen, self).__init__(**kwargs)
+    def __init__(self, **wwargs):
+        super(GenreScreen, self).__init__(**wwargs)
         global lableText
         # Content (FloatLayout)
         layout = FloatLayout()
 
         # Spinners
-        self.spinnerObject_1 = Spinner(text="1. Genre auswählen", values=("Action", "Adventure", "Animation", "Comedy", "Crime", "Documentary", "Drama", "Family", "Fantasy", "Foreign", "History", "Horror", "Music", "Mystery", "Romance", "Science Fiction", "Thriller", "TV Movie", "War", "Western"))
+        self.spinnerObject_1 = Spinner(text="1. Genre auswählen", values=("action", "adventure", "animation", "comedy", "crime", "documentary", "drama", "family", "fantasy", "foreign", "history", "horror", "music", "mystery", "romance", "sciencefiction", "thriller", "tvmovie", "war", "western"))
         self.spinnerObject_1.size_hint  = (0.3, 0.2)
         self.spinnerObject_1.pos_hint={'x': .01, 'y':.75}
 
-        self.spinnerObject_2 = Spinner(text="2. Genre auswählen", values=("Action", "Adventure", "Animation", "Comedy", "Crime", "Documentary", "Drama", "Family", "Fantasy", "Foreign", "History", "Horror", "Music", "Mystery", "Romance", "Science Fiction", "Thriller", "TV Movie", "War", "Western"))
+        self.spinnerObject_2 = Spinner(text="2. Genre auswählen", values=("action", "adventure", "animation", "comedy", "crime", "documentary", "drama", "family", "fantasy", "foreign", "history", "horror", "music", "mystery", "romance", "sciencefiction", "thriller", "tvmovie", "war", "western"))
         self.spinnerObject_2.size_hint  = (0.3, 0.2)
         self.spinnerObject_2.pos_hint={'x': .35, 'y':.75}
 
-        self.spinnerObject_3 = Spinner(text="2. Genre auswählen", values=("Action", "Adventure", "Animation", "Comedy", "Crime", "Documentary", "Drama", "Family", "Fantasy", "Foreign", "History", "Horror", "Music", "Mystery", "Romance", "Science Fiction", "Thriller", "TV Movie", "War", "Western"))
+        self.spinnerObject_3 = Spinner(text="3. Genre auswählen", values=("action", "adventure", "animation", "comedy", "crime", "documentary", "drama", "family", "fantasy", "foreign", "history", "horror", "music", "mystery", "romance", "sciencefiction", "thriller", "tvmovie", "war", "western"))
         self.spinnerObject_3.size_hint  = (0.3, 0.2)
         self.spinnerObject_3.pos_hint={'x': .69, 'y':.75}
 
@@ -109,18 +109,18 @@ class GenreScreen(Screen):
         genres.append(genre2)
         genres.append(genre3)
 
-        for i in range (len(df)):
+        for i in range (len(data['genres'])):
 
             for j in range (len(genres)):
 
-                if df["genres"].str.contains(genres[j])[i]:
+                if data['genres'].str.contains(genres[j])[i]:
 
-                    movies.append(df["title"][i])
+                    movies.append(data["title"][i])
 
         indices_titles = get_index_from_title(movies)
 
         for i in indices_titles:
-            list_votes.append([df["vote_average"][i], i])
+            list_votes.append([data["vote_average"][i], i])
         # print("Index: ", indices_titles)
         # print("Votes: ", list_votes)
         sorted_list_votes = sorted(list_votes, reverse=True)
@@ -128,7 +128,7 @@ class GenreScreen(Screen):
         for i in range (10):
             topTenMoviesIndices.append(sorted_list_votes[i][1])
         print(topTenMoviesIndices)
-            # print(df["genres"].str.contains("Action"))
+            # print(data["genres"].str.contains("action"))
 
         for elements in topTenMoviesIndices:
             topTenMoviesTitle.append(get_title_from_index(elements))
@@ -141,8 +141,8 @@ class GenreScreen(Screen):
     
 class MovieScreen(Screen):
 
-    def __init__(self, **kwargs):
-        super(MovieScreen, self).__init__(**kwargs)
+    def __init__(self, **wwargs):
+        super(MovieScreen, self).__init__(**wwargs)
         # Content (FloatLayout)
         layout = BoxLayout()
         layout.my_buttons = []
