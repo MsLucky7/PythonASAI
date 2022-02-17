@@ -8,9 +8,12 @@ from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.screenmanager import SlideTransition
 from kivy.uix.spinner import Spinner
+
+from kivy.properties import StringProperty, ObjectProperty, ListProperty
 
 from kivy.uix.floatlayout import FloatLayout
 
@@ -22,8 +25,11 @@ from Algorithm import *
 genres = []
 movies = set()
 topTenMoviesIndices = []
+topTenMoviesTitle = []
 
 class GenreScreen(Screen):
+    global topTenMoviesTitle
+    
     
     def __init__(self, **wwargs):
         super(GenreScreen, self).__init__(**wwargs)
@@ -105,7 +111,7 @@ class GenreScreen(Screen):
 
     def switch_next(self, *args):
         list_votes = []
-        topTenMoviesTitle = []
+        #topTenMoviesTitle = []
 
         genres.append(genre1)
         genres.append(genre2)
@@ -136,32 +142,34 @@ class GenreScreen(Screen):
         for elements in topTenMoviesIndices:
             topTenMoviesTitle.append([get_title_from_index(elements), elements])
 
-        print(topTenMoviesTitle)
+        # self.manager.liste = ["1", "2", "3", "4"]
+        # print(topTenMoviesTitle)
 
 
         self.manager.transition = SlideTransition(direction="right")
         self.manager.current = self.manager.next()
     
 class MovieScreen(Screen):
+    global topTenMoviesTitle
+    
 
-    def __init__(self, **wwargs):
-        super(MovieScreen, self).__init__(**wwargs)
-        # Content (FloatLayout)
-        layout = BoxLayout()
-        layout.my_buttons = []
+    def on_enter(self):
+        print(topTenMoviesTitle)
+        counter = 0
 
-        for i in topTenMoviesIndices:
-            button = Button(text=i)
-            layout.my_buttons.append(button)
-            layout.add_widget(button)
+        layout = GridLayout(cols=2, rows=6, spacing=4)
+        liste = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
 
-        # Buttons
-        self.movieButton = Button(text="topTenMoviesIndices")
-        self.movieButton.size_hint  = (0.3, 0.2)
-        self.movieButton.pos_hint={'x': .01, 'y':.75}
+
+        # print(topTenMoviesTitle)
+
+        for i in range(len(topTenMoviesTitle)):
+            self.movieButton_1 = Button(text=str(topTenMoviesTitle[i][0]))
+            self.movieButton_1.bind(on_press=self.pressed)
+            layout.add_widget(self.movieButton_1)
 
         # Add Spinners
-        layout.add_widget(self.movieButton)
+        #layout.add_widget(self.movieButton)
 
         # Navigation (BoxLayout)
         navigation = BoxLayout(size_hint_y=0.2)
@@ -183,6 +191,12 @@ class MovieScreen(Screen):
         # Add the layout to the Screen
         self.add_widget(layout)
 
+    def __init__(self, **wwargs):
+        super(MovieScreen, self).__init__(**wwargs)
+        #topTenMoviesTitle = ["Test1", "Test2", "Test3", "Test4"]
+        # Content (FloatLayout)
+        
+
     def switch_prev(self, *args):
         self.manager.transition = SlideTransition(direction="right")
         self.manager.current = self.manager.previous()
@@ -192,6 +206,9 @@ class MovieScreen(Screen):
         self.manager.transition = SlideTransition(direction="right")
         self.manager.current = self.manager.next()
 
+    def pressed(ID1, ID2):
+        choosenMovies = []
+
 class ScreenManagerApp(App):
 
     def build(self):
@@ -199,6 +216,7 @@ class ScreenManagerApp(App):
 
         root.add_widget(GenreScreen(name="Genre Auswahl"))
         root.add_widget(MovieScreen(name="Movies"))
+        
 
         return root
 
