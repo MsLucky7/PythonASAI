@@ -240,11 +240,15 @@ class TopTenMovieScreen(Screen):
     global topTenMoviesIndices
     global topTenMoviesTitle
     global choosenMovieList
-    global finalMovies
+    
     
 
     def on_enter(self):
         print(choosenMovieList)
+        global finalMovies
+
+        finalMovies.clear()
+
         for i in choosenMovieList:
             recomMovies.append(str(i))
 
@@ -267,7 +271,7 @@ class TopTenMovieScreen(Screen):
 
         # Create buttons with a custom text
         # prev = Button(text='Previous')
-        next = Button(text='Next')
+        next = Button(text='Nochmal')
 
         # Bind to 'on_release' events of Buttons
         # prev.bind(on_release=self.switch_prev)
@@ -302,7 +306,6 @@ class TopTenMovieScreen(Screen):
         choosenMovies.clear()
         choosenMovieList.clear()
         recomMovies.clear()
-        finalMovies.clear()
 
         self.manager.transition = SlideTransition(direction="right")
         self.manager.current = self.manager.next()
