@@ -6,6 +6,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import itertools
 from IPython.display import display
+
 # import nltk
 
 # nltk.download('stopwords')
@@ -107,33 +108,41 @@ def get_index_from_title(title):
         index_list.append(data[data.title == title[i]]['index'].values[0])
     return index_list
 
+sorted_similar_movies = []
 
-movies_user_likes = ["The Dark Knight Rises", "Skyfall", "Diary of a Wimpy Kid: Dog Days", "Avatar", "Spider-Man 2",
-                     "X-Men: The Last Stand"]
-movie_index = get_index_from_title(movies_user_likes)
+def make_recommendation(liste):
+    global sorted_similar_movies
+    counter = 0
 
-length_list = len(movies_user_likes)
-similar_movies_user_likes_list = []
+    print("test")
+    # print(choosenMovieList)
 
-for i in range(length_list):
-    similar_movies_user_likes_list.append(list(enumerate(cosine_sim[movie_index[i]])))
+    # movies_user_likes = ["The Dark Knight Rises", "Skyfall", "Diary of a Wimpy Kid: Dog Days", "Avatar", "Spider-Man 2",
+    #                  "X-Men: The Last Stand"]
+                     
+    movie_index = get_index_from_title(liste)
 
-list_of_similar_movies_user_likes = list(itertools.chain.from_iterable(similar_movies_user_likes_list))
-sorted_similar_movies_user_likes = sorted(list_of_similar_movies_user_likes, key=lambda x: x[1], reverse=True)[1:]
+    length_list = len(liste)
+    similar_movies_user_likes_list = []
 
-for i in range(length_list):
-    sorted_similar_movies_user_likes.pop(0)
+    for i in range(length_list):
+        similar_movies_user_likes_list.append(list(enumerate(cosine_sim[movie_index[i]])))
 
+    list_of_similar_movies_user_likes = list(itertools.chain.from_iterable(similar_movies_user_likes_list))
+    sorted_similar_movies_user_likes = sorted(list_of_similar_movies_user_likes, key=lambda x: x[1], reverse=True)[1:]
 
-def make_recommendation():
-    i = 0
-    print("Top 5 similar movies to " + ' '.join(map(str, movies_user_likes)) + " are:\n")
+    for i in range(length_list):
+        sorted_similar_movies_user_likes.pop(0)
+        
+    print("Top 5 similar movies to " + ", " + ' '.join(map(str, liste)) + " are:\n")
     for element in sorted_similar_movies_user_likes:
-        print(get_title_from_index(element[0]))
-        i = i + 1
-        if i >= 5:
+        sorted_similar_movies.append(get_title_from_index(element[0]))
+        counter = counter + 1
+        if counter >= 5:
             break
-    return sim_scores
+
+    print(sorted_similar_movies)
+    return sorted_similar_movies
 
 
-make_recommendation()
+# make_recommendation()
