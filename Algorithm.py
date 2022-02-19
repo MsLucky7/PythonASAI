@@ -138,7 +138,7 @@ def make_recommendation(liste):
     for element in sorted_similar_movies_user_likes:
         sorted_similar_movies.append(get_title_from_index(element[0]))
         counter = counter + 1
-        if counter >= 5:
+        if counter >= 6:
             break
 
     print(sorted_similar_movies)

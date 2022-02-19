@@ -1,29 +1,25 @@
-# A line used mostly as the first one, imports App class
-# that is used to get a window and launch the application
+# Imports
 from ast import IsNot
 from operator import is_not
-from kivy.app import App
+from random import randrange
 
-# Casual Kivy widgets that reside in kivy.uix
+# Kivy Imports
+from kivy.app import App
+from kivy.core.window import Window
 from kivy.uix.label import Label
 from kivy.uix.button import Button
+from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.screenmanager import SlideTransition
 from kivy.uix.spinner import Spinner
+from matplotlib.patches import Rectangle
 
-from random import randrange
-
-from kivy.properties import StringProperty, ObjectProperty, ListProperty
-
-from kivy.uix.floatlayout import FloatLayout
-
+# Algorithmus Import
 from Algorithm import *
 
-# Inherit Screen class and make it look like
-# a simple page with navigationation
-
+# Globale Variablen
 genres = []
 movies = set()
 topTenMoviesIndices = []
@@ -33,28 +29,41 @@ choosenMovieList = []
 recomMovies = []
 finalMovies = []
 
+# 1. Screen
 class GenreScreen(Screen):
     global topTenMoviesTitle
     
-    
     def __init__(self, **wwargs):
         super(GenreScreen, self).__init__(**wwargs)
-        global lableText
-        # Content (FloatLayout)
+        
+        Window.clearcolor = (0.145, 0.141, 0.133, 1)
+
         layout = FloatLayout()
 
         # Spinners
         self.spinnerObject_1 = Spinner(text="1. Genre auswählen", values=("action", "adventure", "animation", "comedy", "crime", "documentary", "drama", "family", "fantasy", "foreign", "history", "horror", "music", "mystery", "romance", "sciencefiction", "thriller", "tvmovie", "war", "western"))
         self.spinnerObject_1.size_hint  = (0.3, 0.2)
         self.spinnerObject_1.pos_hint={'x': .01, 'y':.75}
+        self.spinnerObject_1.background_color = (0.8, 0.772, 0.725, 1)
+        self.spinnerObject_1.background_normal = ''
+        self.spinnerObject_1.color = (0.145, 0.141, 0.133, 1)
+        self.spinnerObject_1.font_size = 20
 
         self.spinnerObject_2 = Spinner(text="2. Genre auswählen", values=("action", "adventure", "animation", "comedy", "crime", "documentary", "drama", "family", "fantasy", "foreign", "history", "horror", "music", "mystery", "romance", "sciencefiction", "thriller", "tvmovie", "war", "western"))
         self.spinnerObject_2.size_hint  = (0.3, 0.2)
         self.spinnerObject_2.pos_hint={'x': .35, 'y':.75}
+        self.spinnerObject_2.background_color = (0.8, 0.772, 0.725, 1)
+        self.spinnerObject_2.background_normal = ''
+        self.spinnerObject_2.color = (0.145, 0.141, 0.133, 1)
+        self.spinnerObject_2.font_size = 20
 
         self.spinnerObject_3 = Spinner(text="3. Genre auswählen", values=("action", "adventure", "animation", "comedy", "crime", "documentary", "drama", "family", "fantasy", "foreign", "history", "horror", "music", "mystery", "romance", "sciencefiction", "thriller", "tvmovie", "war", "western"))
         self.spinnerObject_3.size_hint  = (0.3, 0.2)
         self.spinnerObject_3.pos_hint={'x': .69, 'y':.75}
+        self.spinnerObject_3.background_color = (0.8, 0.772, 0.725, 1)
+        self.spinnerObject_3.background_normal = ''
+        self.spinnerObject_3.color = (0.145, 0.141, 0.133, 1)
+        self.spinnerObject_3.font_size = 20
 
         self.spinnerSelection = Label(text="Genre")
         self.spinnerSelection.font_size = 50
@@ -66,11 +75,16 @@ class GenreScreen(Screen):
         layout.add_widget(self.spinnerObject_3)
 
         # Navigation (BoxLayout)
-        navigation = BoxLayout(size_hint_y=0.2)
+        navigation = BoxLayout(size_hint_y=0.2, padding=20)
 
         # Create buttons with a custom text
         # prev = Button(text='Previous')
         next = Button(text='Next')
+        next.font_size = 35
+        next.background_color = (0.921, 0.368, 0.156, 1)
+        next.background_normal = ''
+        # with next.canvas:
+        #     next.rect = Rectangle(size=next.size, pos=next.pos)
 
         # Bind to 'on_release' events of Buttons
         # prev.bind(on_release=self.switch_prev)
@@ -174,22 +188,24 @@ class MovieScreen(Screen):
         print(topTenMoviesTitle)
         counter = 0
 
-        layout = GridLayout(cols=2, rows=6, spacing=4)
+        layout = GridLayout(cols=1, rows=2, spacing=10)
+        buttons = GridLayout(cols=2, rows=5, spacing=25, padding=20)
         liste = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
 
 
         # print(topTenMoviesTitle)
 
         for i in range(len(topTenMoviesTitle)):
-            self.movieButton_1 = Button(text=str(topTenMoviesTitle[i]))
-            self.movieButton_1.bind(on_press=self.pressed)
-            layout.add_widget(self.movieButton_1)
+            self.movieButtons = Button(text=str(topTenMoviesTitle[i]))
+            self.movieButtons.bind(on_press=self.pressed)
+            buttons.add_widget(self.movieButtons)
 
+        layout.add_widget(buttons)
         # Add Spinners
         #layout.add_widget(self.movieButton)
 
         # Navigation (BoxLayout)
-        navigation = BoxLayout(size_hint_y=0.2)
+        navigation = BoxLayout(size_hint_y=0.2, padding=20)
 
         # Create buttons with a custom text
         # prev = Button(text='Previous')
@@ -198,6 +214,8 @@ class MovieScreen(Screen):
         # Bind to 'on_release' events of Buttons
         # prev.bind(on_release=self.switch_prev)
         next.bind(on_release=self.switch_next)
+        next.background_color = (0.921, 0.368, 0.156, 1)
+        next.background_normal = ''
 
         # Add buttons to navigationation
         # and the navigationation to layout
@@ -244,6 +262,9 @@ class TopTenMovieScreen(Screen):
     
 
     def on_enter(self):
+        layout = GridLayout(cols=1, rows=2, spacing=10)
+        buttons = GridLayout(cols=2, rows=5, spacing=25, padding=20)
+    
         print(choosenMovieList)
         global finalMovies
 
@@ -254,24 +275,28 @@ class TopTenMovieScreen(Screen):
 
         finalMovies = make_recommendation(recomMovies)
 
-        layout = GridLayout(cols=2, rows=6, spacing=4)
+        
 
         # print(topTenMoviesTitle)
 
         for n in range(len(finalMovies)):
             self.recomMovieButton = Button(text=str(finalMovies[n]))
             self.recomMovieButton.bind(on_press=self.pressed)
-            layout.add_widget(self.recomMovieButton)
+            buttons.add_widget(self.recomMovieButton)
+
+        layout.add_widget(buttons)
 
         # Add Spinners
         #layout.add_widget(self.movieButton)
 
         # Navigation (BoxLayout)
-        navigation = BoxLayout(size_hint_y=0.2)
+        navigation = BoxLayout(size_hint_y=0.2, padding=20)
 
         # Create buttons with a custom text
         # prev = Button(text='Previous')
         next = Button(text='Nochmal')
+        next.background_color = (0.921, 0.368, 0.156, 1)
+        next.background_normal = ''
 
         # Bind to 'on_release' events of Buttons
         # prev.bind(on_release=self.switch_prev)
