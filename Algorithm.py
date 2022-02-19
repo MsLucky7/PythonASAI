@@ -19,8 +19,9 @@ data.drop(['budget', 'homepage', 'original_language', 'id', 'movie_id', 'release
            'production_countries', 'production_companies', 'runtime', 'original_title', 'status', 'vote_count',
            'revenue', 'spoken_languages'], axis=1, inplace=True)
 data.dropna(axis=0, how='any', thresh=None, subset=None, inplace=False)
-# data.drop(data[data.keywords == '[]'].index, inplace=True)
-# data.drop(data[data.genres == '[]'].index, inplace=True)
+data.drop(data[data.keywords == '[]'].index, inplace=True)
+data.drop(data[data.genres == '[]'].index, inplace=True)
+data.reset_index(inplace=True)
 
 features = ['cast', 'keywords', 'genres', 'crew']
 for feature in features:
