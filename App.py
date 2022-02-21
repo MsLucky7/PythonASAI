@@ -75,17 +75,13 @@ class GenreScreen(Screen):
         # Navigation (BoxLayout)
         navigation = BoxLayout(size_hint_y=0.2, padding=20)
 
-        # Create buttons with a custom text
-        # prev = Button(text='Previous')
+        # Add next button
         next = Button(text='Weiter')
         next.font_size = 35
         next.background_color = (0.921, 0.368, 0.156, 1)
         next.background_normal = ''
-        # with next.canvas:
-        #     next.rect = Rectangle(size=next.size, pos=next.pos)
 
-        # Bind to 'on_release' events of Buttons
-        # prev.bind(on_release=self.switch_prev)
+        # Bind function to buttons
         next.bind(on_release=self.switch_next)
         self.spinnerObject_1.bind(text=self.on_spinner_select_1)
         self.spinnerObject_2.bind(text=self.on_spinner_select_2)        
@@ -93,7 +89,6 @@ class GenreScreen(Screen):
 
         # Add buttons to navigationation
         # and the navigationation to layout
-        # navigation.add_widget(prev)
         navigation.add_widget(next)
         layout.add_widget(navigation)
 
@@ -225,7 +220,6 @@ class MovieScreen(Screen):
 
         layout.add_widget(buttons)
 
-        # prev = Button(text='Previous')
         next = Button(text='Weiter')
 
         # Navigation buttons (Binds and color)
@@ -267,6 +261,9 @@ class TopTenMovieScreen(Screen):
     global topTenMoviesIndices
     global topTenMoviesTitle
     global choosenMovieList
+
+    def __init__(self, **wwargs):
+        super(TopTenMovieScreen, self).__init__(**wwargs)
     
     def on_enter(self):
         layout = GridLayout(cols=1, rows=2, spacing=10)
@@ -293,43 +290,25 @@ class TopTenMovieScreen(Screen):
 
         layout.add_widget(buttons)
 
-        # Add Spinners
-        #layout.add_widget(self.movieButton)
-
         # Navigation (BoxLayout)
         navigation = BoxLayout(size_hint_y=0.2, padding=20)
 
-        # Create buttons with a custom text
-        # prev = Button(text='Previous')
+        # Create next button
         next = Button(text='Nochmal')
         next.font_size = 35
         next.background_color = (0.921, 0.368, 0.156, 1)
         next.background_normal = ''
 
-        # Bind to 'on_release' events of Buttons
-        # prev.bind(on_release=self.switch_prev)
+        # Bind function to next button
         next.bind(on_release=self.switch_next)
 
         # Add buttons to navigationation
         # and the navigationation to layout
-        # navigation.add_widget(prev)
         navigation.add_widget(next)
         layout.add_widget(navigation)
 
         # Add the layout to the Screen
         self.add_widget(layout)
-
-    def __init__(self, **wwargs):
-        super(TopTenMovieScreen, self).__init__(**wwargs)
-        #topTenMoviesTitle = ["Test1", "Test2", "Test3", "Test4"]
-        # Content (FloatLayout)
-
-        # make_recommendation()
-        
-
-    # def switch_prev(self, *args):
-    #     self.manager.transition = SlideTransition(direction="right")
-    #     self.manager.current = self.manager.previous()
 
     def switch_next(self, *args):
         # clear all lists and sets

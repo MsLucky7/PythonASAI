@@ -145,5 +145,4 @@ def make_recommendation(liste):
     print(sorted_similar_movies)
     return sorted_similar_movies
 
-
 # make_recommendation()
